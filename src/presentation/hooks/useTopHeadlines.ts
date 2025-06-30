@@ -17,13 +17,3 @@ export function useTopHeadlines(params?: HeadlinesParams) {
         gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
     });
 }
-
-/**
- * Hook state includes:
- * - data: ArticleCollection | undefined
- * - isLoading: boolean
- * - isError: boolean
- * - error: Error | null
- * - refetch: () => void
- * - isRefetching: boolean
- */

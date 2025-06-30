@@ -68,7 +68,7 @@ export const usePreferences = create<PreferencesState>()(
                 }),
         }),
         {
-            name: 'news-preferences', // localStorage key
+            name: 'news-preferences',
         }
     )
 );
