@@ -1,4 +1,4 @@
-import { Article, ArticleCollection } from '../entities/Article';
+import type { ArticleCollection } from '../entities/Article';
 import { Category, Country, Language } from '../entities/UserPreferences';
 
 /**

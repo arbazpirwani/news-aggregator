@@ -1,5 +1,5 @@
-import { ArticleCollection } from '../entities/Article';
-import { HeadlinesParams, NewsRepository } from '../repositories/NewsRepository';
+import type { ArticleCollection } from '../entities/Article';
+import type { HeadlinesParams, NewsRepository } from '../repositories/NewsRepository';
 
 /**
  * Use case for fetching top headlines
