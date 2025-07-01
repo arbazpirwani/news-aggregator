@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useDependencies } from '../context/DependencyContext';
 import { HeadlinesParams } from '../../domain/repositories/NewsRepository';
-import { ArticleCollection } from '../../domain/entities/Article';
+import type { ArticleCollection } from '../../domain/entities/Article';
 
 /**
  * Custom hook for fetching top headlines

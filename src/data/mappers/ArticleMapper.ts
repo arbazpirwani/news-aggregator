@@ -1,7 +1,7 @@
-import { Article } from '../../domain/entities/Article';
-import { NewsApiArticleDto } from '../dto/NewsApiDto';
-import { GuardianArticleDto } from '../dto/GuardianApiDto';
-import { NytArticleDto } from '../dto/NytApiDto';
+import type { Article } from '../../domain/entities/Article';
+import type { NewsApiArticleDto } from '../dto/NewsApiDto';
+import type { GuardianArticleDto } from '../dto/GuardianApiDto';
+import type { NytArticleDto } from '../dto/NytApiDto';
 
 /**
  * Maps different API DTOs to our domain Article entity

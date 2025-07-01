@@ -1,5 +1,8 @@
-import { BaseApiClient } from './BaseApiClient.ts';
-import { NewsApiResponseDto, NewsApiSourcesResponseDto } from '../dto/NewsApiDto';
+import { BaseApiClient } from './BaseApiClient';
+import type {
+    NewsApiResponseDto,
+    NewsApiSourcesResponseDto
+} from '../dto/NewsApiDto';
 
 /**
  * NewsAPI.org API client

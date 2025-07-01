@@ -1,5 +1,5 @@
-import { ArticleCollection } from '../entities/Article';
-import { NewsRepository, SearchParams } from '../repositories/NewsRepository';
+import type { ArticleCollection } from '../entities/Article';
+import type { NewsRepository, SearchParams } from '../repositories/NewsRepository';
 
 /**
  * Use case for searching articles

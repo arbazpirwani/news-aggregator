@@ -1,4 +1,4 @@
-import {
+import type {
     NewsRepository,
     HeadlinesParams,
     SearchParams,
@@ -6,7 +6,7 @@ import {
     NewsSource,
     SourceParams
 } from '../../domain/repositories/NewsRepository';
-import { ArticleCollection } from '../../domain/entities/Article';
+import type { ArticleCollection } from '../../domain/entities/Article';
 import { NewsApiClient } from '../api/NewsApiClient';
 import { ArticleMapper } from '../mappers/ArticleMapper';
 

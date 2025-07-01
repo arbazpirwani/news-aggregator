@@ -1,10 +1,10 @@
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 /**
  * Base API client with common functionality
  */
 export abstract class BaseApiClient {
-    protected client: AxiosInstance;
+    protected client: any; // Using any to avoid type issues
 
     constructor(baseURL: string, protected apiKey: string) {
         this.client = axios.create({
@@ -57,7 +57,7 @@ export abstract class BaseApiClient {
     /**
      * Make GET request with error handling
      */
-    protected async get<T>(url: string, config?: Parameters<AxiosInstance['get']>[1]): Promise<T> {
+    protected async get<T>(url: string, config?: any): Promise<T> {
         const response = await this.client.get<T>(url, config);
         return response.data;
     }
