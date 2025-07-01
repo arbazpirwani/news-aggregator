@@ -7,77 +7,65 @@ import type { NytArticleDto } from '../dto/NytApiDto';
  * Maps different API DTOs to our domain Article entity
  */
 export class ArticleMapper {
-    /**
-     * Map NewsAPI article to domain entity
-     */
     static fromNewsApi(dto: NewsApiArticleDto): Article {
         return {
-            id: this.generateId(dto.url),
+            id: ArticleMapper.generateId(dto.url),
             title: dto.title,
-            description: dto.description || '',
+            description: dto.description ?? '',
             url: dto.url,
-            urlToImage: dto.urlToImage || undefined,
+            urlToImage: dto.urlToImage ?? undefined,
             publishedAt: dto.publishedAt,
-            source: {
-                id: dto.source.id,
-                name: dto.source.name,
-            },
-            author: dto.author || undefined,
-            content: dto.content || undefined,
-            category: undefined, // NewsAPI doesn't provide category in article
+            source: { id: dto.source.id, name: dto.source.name },
+            author: dto.author ?? undefined,
+            content: dto.content ?? undefined,
+            category: undefined,
         };
     }
 
-    /**
-     * Map Guardian article to domain entity
-     */
     static fromGuardian(dto: GuardianArticleDto): Article {
         return {
             id: dto.id,
             title: dto.webTitle,
-            description: dto.fields?.trailText || dto.fields?.standfirst || '',
+            description: dto.fields?.trailText ?? dto.fields?.standfirst ?? '',
             url: dto.webUrl,
-            urlToImage: dto.fields?.thumbnail,
+            urlToImage: dto.fields?.thumbnail ?? undefined,
             publishedAt: dto.webPublicationDate,
-            source: {
-                id: 'the-guardian',
-                name: 'The Guardian',
-            },
-            author: dto.fields?.byline,
-            content: dto.fields?.bodyText,
+            source: { id: 'the-guardian', name: 'The Guardian' },
+            author: dto.fields?.byline ?? undefined,
+            content: dto.fields?.bodyText ?? undefined,
             category: dto.sectionName.toLowerCase(),
         };
     }
 
-    /**
-     * Map NYT article to domain entity
-     */
-    static fromNyt(dto: NytArticleDto): Article {
-        const imageUrl = dto.multimedia?.[0]?.url
-            ? `https://www.nytimes.com/${dto.multimedia[0].url}`
+    static fromNyt(dto: NytArticleDto & Record<string, any>): Article {
+        const title = dto.headline?.main ?? dto.title ?? '';
+        const description = dto.abstract ?? dto.snippet ?? '';
+        const url = dto.web_url ?? dto.url ?? '';
+        const publishedAt =
+            dto.pub_date ?? (dto as any).published_date ?? new Date().toISOString();
+
+        const firstMedia = dto.multimedia?.[0];
+        const urlToImage = firstMedia?.url
+            ? firstMedia.url.startsWith('http')
+                ? firstMedia.url
+                : `https://www.nytimes.com/${firstMedia.url}`
             : undefined;
 
         return {
-            id: dto._id,
-            title: dto.headline.main,
-            description: dto.abstract || dto.snippet,
-            url: dto.web_url,
-            urlToImage: imageUrl,
-            publishedAt: dto.pub_date,
-            source: {
-                id: 'new-york-times',
-                name: 'New York Times',
-            },
-            author: dto.byline?.original,
-            content: dto.lead_paragraph,
-            category: dto.section_name?.toLowerCase(),
+            id: dto._id ?? dto.uri ?? ArticleMapper.generateId(url),
+            title,
+            description,
+            url,
+            urlToImage,
+            publishedAt,
+            source: { id: 'new-york-times', name: 'New York Times' },
+            author: dto.byline?.original ?? undefined,
+            content: dto.lead_paragraph ?? undefined,
+            category: dto.section_name?.toLowerCase() ?? undefined,
         };
     }
 
-    /**
-     * Generate a unique ID from URL
-     */
     private static generateId(url: string): string {
-        return btoa(url).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+        return btoa(url).replace(/[^a-zA-Z0-9]/g, '');
     }
 }

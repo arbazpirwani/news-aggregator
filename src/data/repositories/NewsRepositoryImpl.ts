@@ -6,9 +6,9 @@ import type {
     NewsSource,
     SourceParams
 } from '../../domain/repositories/NewsRepository';
-import type { ArticleCollection } from '../../domain/entities/Article';
-import { NewsApiClient } from '../api/NewsApiClient';
-import { ArticleMapper } from '../mappers/ArticleMapper';
+import type {ArticleCollection} from '../../domain/entities/Article';
+import {NewsApiClient} from '../api/NewsApiClient';
+import {ArticleMapper} from '../mappers/ArticleMapper';
 
 /**
  * Implementation of NewsRepository using NewsAPI
@@ -25,16 +25,25 @@ export class NewsRepositoryImpl implements NewsRepository {
     }
 
     async getTopHeadlines(params?: HeadlinesParams): Promise<ArticleCollection> {
+        // Default at least one filter: country defaults to 'us'
+        const {
+            country = 'us',
+            category,
+            sources = [],
+            page = 1,
+            pageSize = 20
+        } = params || {};
+
         try {
             const response = await this.newsApiClient.getTopHeadlines({
-                country: params?.country,
-                category: params?.category,
-                sources: params?.sources?.join(','),
-                page: params?.page,
-                pageSize: params?.pageSize,
+                country,
+                category,
+                sources: sources.join(','),
+                page,
+                pageSize,
             });
 
-            const articles = response.articles.map(ArticleMapper.fromNewsApi);
+            const articles = response.articles.map(dto => ArticleMapper.fromNewsApi(dto));
 
             return {
                 articles,
@@ -60,7 +69,7 @@ export class NewsRepositoryImpl implements NewsRepository {
                 pageSize: params.pageSize,
             });
 
-            const articles = response.articles.map(ArticleMapper.fromNewsApi);
+            const articles = response.articles.map(dto => ArticleMapper.fromNewsApi(dto));
 
             return {
                 articles,
