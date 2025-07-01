@@ -1,19 +1,18 @@
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
-import type {
-    HeadlinesParams,
-    ArticleCollection
-} from '../../domain/repositories/NewsRepository';
-import { useDependencies } from '../context/DependencyContext';
+import { useQuery } from '@tanstack/react-query'
+import { useDependencies } from '../context/DependencyContext'
+import type { Category, Country } from '../../domain/entities/UserPreferences'
 
 export function useTopHeadlines(
-    params: HeadlinesParams,
-    options?: UseQueryOptions<ArticleCollection, Error>
+    category?: Category,
+    country?: Country,
+    page = 1
 ) {
-    const { getTopHeadlinesUseCase } = useDependencies();
+    const { getTopHeadlinesUseCase } = useDependencies()
 
-    return useQuery<ArticleCollection, Error>({
-        queryKey: ['topHeadlines', params],
-        queryFn: () => getTopHeadlinesUseCase.execute(params ?? {}),
-        ...options,
-    });
+    return useQuery({
+        queryKey: ['topHeadlines', { category, country, page }],
+        queryFn: () =>
+            getTopHeadlinesUseCase.execute({ category, country, page }),
+        keepPreviousData: true,
+    })
 }

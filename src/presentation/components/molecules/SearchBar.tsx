@@ -1,11 +1,11 @@
-import { useState, FormEvent } from 'react';
-import { Input } from '../atoms/Input';
-import { Button } from '../atoms/Button';
+import { useState, useEffect, FormEvent } from 'react'
+import { Input } from '../atoms/Input'
+import { Button } from '../atoms/Button'
 
 interface SearchBarProps {
-    onSearch: (query: string) => void;
-    placeholder?: string;
-    initialValue?: string;
+    onSearch: (query: string) => void
+    placeholder?: string
+    initialValue?: string
 }
 
 export function SearchBar({
@@ -13,14 +13,19 @@ export function SearchBar({
                               placeholder = 'Search articles...',
                               initialValue = ''
                           }: SearchBarProps) {
-    const [query, setQuery] = useState(initialValue);
+    const [query, setQuery] = useState(initialValue)
+
+    // reset input when initialValue (i.e. searchQuery in App) changes
+    useEffect(() => {
+        setQuery(initialValue)
+    }, [initialValue])
 
     const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
+        e.preventDefault()
         if (query.trim()) {
-            onSearch(query.trim());
+            onSearch(query.trim())
         }
-    };
+    }
 
     return (
         <form onSubmit={handleSubmit} className="flex gap-2">
@@ -28,7 +33,7 @@ export function SearchBar({
                 <Input
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={e => setQuery(e.target.value)}
                     placeholder={placeholder}
                     className="w-full"
                 />
@@ -37,5 +42,5 @@ export function SearchBar({
                 Search
             </Button>
         </form>
-    );
+    )
 }
