@@ -1,24 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import type {
+    SearchParams,
+    ArticleCollection
+} from '../../domain/repositories/NewsRepository';
 import { useDependencies } from '../context/DependencyContext';
-import { SearchParams } from '../../domain/repositories/NewsRepository';
-import type { ArticleCollection } from '../../domain/entities/Article';
 
-/**
- * Custom hook for searching articles
- */
-export function useSearchArticles(params: SearchParams | null) {
+export function useSearchArticles(
+    params: SearchParams,
+    options?: UseQueryOptions<ArticleCollection, Error>
+) {
     const { searchArticlesUseCase } = useDependencies();
 
     return useQuery<ArticleCollection, Error>({
-        queryKey: ['search', params],
-        queryFn: () => {
-            if (!params) {
-                throw new Error('Search parameters are required');
-            }
-            return searchArticlesUseCase.execute(params);
-        },
-        enabled: !!params && !!params.query, // Only run if we have search params
-        staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
+        queryKey: ['searchArticles', params],
+        queryFn: () => searchArticlesUseCase.execute(params),
+        ...options,
     });
 }

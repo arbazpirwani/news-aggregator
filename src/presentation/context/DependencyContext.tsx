@@ -1,18 +1,17 @@
-import { createContext, useContext, ReactNode, useMemo } from 'react';
-import { NewsRepository } from '../../domain/repositories/NewsRepository';
-import { NewsRepositoryImpl } from '../../data/repositories/NewsRepositoryImpl';
-import { GetTopHeadlinesUseCase } from '../../domain/usecases/GetTopHeadlinesUseCase';
-import { SearchArticlesUseCase } from '../../domain/usecases/SearchArticlesUseCase';
+import {createContext, useContext, ReactNode, useMemo} from 'react';
+import type {NewsRepository} from '../../domain/repositories/NewsRepository';
+import {NewsRepositoryImpl} from '../../data/repositories/NewsRepositoryImpl';
+import {GuardianRepositoryImpl} from '../../data/repositories/GuardianRepositoryImpl';
+import {NytRepositoryImpl} from '../../data/repositories/NytRepositoryImpl';
+import {CompositeNewsRepository} from '../../data/repositories/CompositeNewsRepository';
+import {GetTopHeadlinesUseCase} from '../../domain/usecases/GetTopHeadlinesUseCase';
+import {SearchArticlesUseCase} from '../../domain/usecases/SearchArticlesUseCase';
 
-/**
- * Dependency Injection Container
- * Similar to Dagger/Hilt in Android
- */
 interface Dependencies {
-    // Repositories
+    // Aggregated repository for all three sources
     newsRepository: NewsRepository;
 
-    // Use Cases
+    // Use-case instances
     getTopHeadlinesUseCase: GetTopHeadlinesUseCase;
     searchArticlesUseCase: SearchArticlesUseCase;
 }
@@ -23,12 +22,21 @@ interface DependencyProviderProps {
     children: ReactNode;
 }
 
-export function DependencyProvider({ children }: DependencyProviderProps) {
+export function DependencyProvider({children}: DependencyProviderProps) {
     const dependencies = useMemo<Dependencies>(() => {
-        // Create repository instances
-        const newsRepository = new NewsRepositoryImpl();
+        // 1) Instantiate each REST client–backed repository
+        const newsApiRepo = new NewsRepositoryImpl();       // NewsAPI.org
+        const guardianRepo = new GuardianRepositoryImpl();   // The Guardian API
+        const nytRepo = new NytRepositoryImpl();        // NYT Top Stories + Article Search
 
-        // Create use case instances
+        // 2) Compose them into a single aggregate
+        const newsRepository = new CompositeNewsRepository([
+            newsApiRepo,
+            guardianRepo,
+            nytRepo,
+        ]);
+
+        // 3) Create your use-cases against that composite
         const getTopHeadlinesUseCase = new GetTopHeadlinesUseCase(newsRepository);
         const searchArticlesUseCase = new SearchArticlesUseCase(newsRepository);
 
@@ -47,7 +55,8 @@ export function DependencyProvider({ children }: DependencyProviderProps) {
 }
 
 /**
- * Hook to access dependencies
+ * Custom hook to pull our DI container out of React context.
+ * Throws if you forget to wrap your tree in <DependencyProvider>.
  */
 export function useDependencies(): Dependencies {
     const context = useContext(DependencyContext);
