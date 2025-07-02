@@ -1,19 +1,25 @@
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
-import type {
-    SearchParams,
-    ArticleCollection
-} from '../../domain/repositories/NewsRepository';
-import { useDependencies } from '../context/DependencyContext';
+import { useQuery } from '@tanstack/react-query'
+import { useDependencies } from '../context/DependencyContext'
+import type { Category, Country } from '../../domain/entities/UserPreferences'
 
 export function useSearchArticles(
-    params: SearchParams,
-    options?: UseQueryOptions<ArticleCollection, Error>
+    searchQuery: string,
+    category?: Category,
+    country?: Country,
+    page = 1
 ) {
-    const { searchArticlesUseCase } = useDependencies();
+    const { searchArticlesUseCase } = useDependencies()
 
-    return useQuery<ArticleCollection, Error>({
-        queryKey: ['searchArticles', params],
-        queryFn: () => searchArticlesUseCase.execute(params),
-        ...options,
-    });
+    return useQuery({
+        queryKey: ['searchArticles', { searchQuery, category, country, page }],
+        queryFn: () =>
+            searchArticlesUseCase.execute({
+                query: searchQuery,
+                category,
+                country,
+                page,
+            }),
+        enabled: !!searchQuery,
+        keepPreviousData: true,
+    })
 }
