@@ -1,4 +1,4 @@
-import type { Article } from '../../domain/entities/Article';
+import type { Article } from '../../domain';
 import type { NewsApiArticleDto } from '../dto/NewsApiDto';
 import type { GuardianArticleDto } from '../dto/GuardianApiDto';
 import type { NytArticleDto } from '../dto/NytApiDto';

@@ -1,14 +1,15 @@
 import type {
+    ArticleCollection,
     NewsRepository,
     HeadlinesParams,
     SearchParams,
     PaginationParams,
     NewsSource,
     SourceParams
-} from '../../domain/repositories/NewsRepository';
-import type {ArticleCollection} from '../../domain/entities/Article';
+} from '../../domain';
 import {NewsApiClient} from '../api/NewsApiClient';
 import {ArticleMapper} from '../mappers/ArticleMapper';
+import {env} from "../../config/env.ts";
 
 /**
  * Implementation of NewsRepository using NewsAPI
@@ -17,7 +18,7 @@ export class NewsRepositoryImpl implements NewsRepository {
     private newsApiClient: NewsApiClient;
 
     constructor() {
-        const apiKey = import.meta.env.VITE_NEWSAPI_KEY;
+        const apiKey = env.NEWSAPI_KEY;
         if (!apiKey) {
             throw new Error('NewsAPI key is not configured');
         }

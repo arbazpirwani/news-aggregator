@@ -1,20 +1,21 @@
 import type {
+    ArticleCollection,
     NewsRepository,
     HeadlinesParams,
     SearchParams,
     PaginationParams,
     SourceParams,
     NewsSource
-} from '../../domain/repositories/NewsRepository';
-import type { ArticleCollection } from '../../domain/entities/Article';
-import { GuardianApiClient } from '../api/GuardianApiClient';
-import { ArticleMapper } from '../mappers/ArticleMapper';
+} from '../../domain';
+import {GuardianApiClient} from '../api/GuardianApiClient';
+import {ArticleMapper} from '../mappers/ArticleMapper';
+import {env} from "../../config/env.ts";
 
 export class GuardianRepositoryImpl implements NewsRepository {
     private client: GuardianApiClient;
 
     constructor() {
-        const key = import.meta.env.VITE_GUARDIAN_KEY;
+        const key = env.GUARDIAN_KEY
         if (!key) throw new Error('Guardian API key not configured');
         this.client = new GuardianApiClient(key);
     }
