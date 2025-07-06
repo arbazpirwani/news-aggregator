@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type {AxiosInstance} from 'axios';
-import {axiosConfig} from "../config/axiosConfig.ts";
+import {axiosConfig} from "../../config/axiosConfig";
 
 /**
  * Base API client with common functionality
