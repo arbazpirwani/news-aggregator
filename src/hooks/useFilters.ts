@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Category, Country } from '../../domain';
+import { Category, Country } from '../domain';
 
 export interface FilterState {
     category?: Category;

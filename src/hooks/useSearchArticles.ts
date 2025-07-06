@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Category, Country } from '../../domain'
-import {useDependencies} from "../../context/DependencyContext";
+import type { Category, Country } from '../domain'
+import {useDependencies} from "./useDependencies";
 
 export function useSearchArticles(
     searchQuery: string,
