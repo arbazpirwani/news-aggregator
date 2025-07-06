@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { UserPreferences, Category } from '../../domain/entities/UserPreferences';
+import type { UserPreferences, Category } from '../../domain';
 
 interface PreferencesState {
     preferences: Partial<UserPreferences>;

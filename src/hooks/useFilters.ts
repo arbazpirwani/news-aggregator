@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Category, Country } from '../../domain/entities/UserPreferences';
+import { Category, Country } from '../../domain';
 
 export interface FilterState {
     category?: Category;
