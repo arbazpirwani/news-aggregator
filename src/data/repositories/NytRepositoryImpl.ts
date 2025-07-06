@@ -1,20 +1,21 @@
 import type {
+    ArticleCollection,
     NewsRepository,
     HeadlinesParams,
     SearchParams,
     PaginationParams,
     SourceParams,
     NewsSource
-} from '../../domain/repositories/NewsRepository';
-import type { ArticleCollection } from '../../domain/entities/Article';
-import { NytApiClient } from '../api/NytApiClient';
-import { ArticleMapper } from '../mappers/ArticleMapper';
+} from '../../domain';
+import {NytApiClient} from '../api/NytApiClient';
+import {ArticleMapper} from '../mappers/ArticleMapper';
+import {env} from "../../config/env.ts";
 
 export class NytRepositoryImpl implements NewsRepository {
     private client: NytApiClient;
 
     constructor() {
-        const key = import.meta.env.VITE_NYT_KEY;
+        const key = env.NYT_KEY;
         if (!key) throw new Error('NYT API key not configured');
         this.client = new NytApiClient(key);
     }
@@ -65,10 +66,10 @@ export class NytRepositoryImpl implements NewsRepository {
 
     async getSources(params?: SourceParams): Promise<NewsSource[]> {
         // NYT doesn’t provide a “sources” endpoint—manually return common sections or skip
-        const sections = ['home','world','us','business','technology','sports'];
+        const sections = ['home', 'world', 'us', 'business', 'technology', 'sports'];
         return sections.map(sec => ({
             id: sec,
-            name: sec.charAt(0).toUpperCase()+sec.slice(1),
+            name: sec.charAt(0).toUpperCase() + sec.slice(1),
             description: '',
             url: '',
             category: sec,

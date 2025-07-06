@@ -1,19 +1,20 @@
 import type {
+    ArticleCollection,
     NewsRepository,
     HeadlinesParams,
     SearchParams,
     PaginationParams,
     SourceParams,
     NewsSource
-} from '../../domain/repositories/NewsRepository';
-import type { ArticleCollection } from '../../domain/entities/Article';
+} from '../../domain';
 
 /**
  * Aggregates multiple NewsRepository implementations into one,
  * and tolerates individual failures.
  */
 export class CompositeNewsRepository implements NewsRepository {
-    constructor(private repos: NewsRepository[]) {}
+    constructor(private repos: NewsRepository[]) {
+    }
 
     /** Fetch top headlines from all repos, tolerate failures */
     async getTopHeadlines(params?: HeadlinesParams): Promise<ArticleCollection> {

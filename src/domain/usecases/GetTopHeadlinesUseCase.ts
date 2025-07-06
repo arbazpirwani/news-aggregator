@@ -1,5 +1,5 @@
-import type { ArticleCollection } from '../entities/Article';
-import type { HeadlinesParams, NewsRepository } from '../repositories/NewsRepository';
+import type {ArticleCollection} from '../entities/Article';
+import type {HeadlinesParams, NewsRepository} from '../repositories/NewsRepository';
 
 /**
  * Use case for fetching top headlines
@@ -18,12 +18,6 @@ export class GetTopHeadlinesUseCase {
             throw new Error('Page number must be greater than 0');
         }
 
-        // Fetch from repository
-        const headlines = await this.newsRepository.getTopHeadlines(params);
-
-        // Additional business logic could go here
-        // For example: filtering based on user preferences, content moderation, etc.
-
-        return headlines;
+        return await this.newsRepository.getTopHeadlines(params);
     }
 }

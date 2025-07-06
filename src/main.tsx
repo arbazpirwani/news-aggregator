@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './styles/index.css';
 import App from './App';
-import { QueryProvider } from './presentation/providers/QueryProvider';
-import { DependencyProvider } from './presentation/context/DependencyContext';
+import {QueryProvider} from './presentation/providers/QueryProvider';
+import {DependencyProvider} from "./context/DependencyProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryProvider>
             <DependencyProvider>
-                <App />
+                <App/>
             </DependencyProvider>
         </QueryProvider>
     </React.StrictMode>

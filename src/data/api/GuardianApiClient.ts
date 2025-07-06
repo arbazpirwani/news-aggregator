@@ -6,7 +6,8 @@ import type {
 
 export class GuardianApiClient extends BaseApiClient {
     constructor(apiKey: string) {
-        super('/guardian', apiKey);
+        const baseURL ='https://content.guardianapis.com';
+        super(baseURL, apiKey);
     }
 
     async searchArticles(params: {

@@ -1,21 +1,17 @@
 import axios from 'axios';
+import type {AxiosInstance} from 'axios';
+import {axiosConfig} from "../../config/axiosConfig";
 
 /**
  * Base API client with common functionality
  */
 export abstract class BaseApiClient {
-    protected client: any; // Using any to avoid type issues
+    protected client: AxiosInstance;
 
-    constructor(baseURL: string, protected apiKey: string) {
-        this.client = axios.create({
-            baseURL,
-            timeout: 10000,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+    protected constructor(baseURL: string, protected apiKey: string) {
 
-        // Request interceptor for logging
+        this.client = axios.create({baseURL, ...axiosConfig});
+
         this.client.interceptors.request.use(
             (config) => {
                 console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
