@@ -1,22 +1,20 @@
-import {Input} from '../atoms/Input'
+import { Input } from "../atoms/Input";
 
 interface SearchBarProps {
-    initialValue?: string
-    placeholder?: string
-    onSearch: (query: string) => void
-    className?: string
+  initialValue?: string;
+  placeholder?: string;
+  onSearch: (query: string) => void;
+  className?: string;
 }
 
 export function SearchBar({
-                              placeholder = 'Search…',
-                              onSearch,
-                          }: SearchBarProps) {
-
-    return (
-        <Input
-            onChange={(e) => onSearch(e.target.value)}
-            placeholder={placeholder}
-        />
-
-    )
+  placeholder = "Search…",
+  onSearch,
+}: SearchBarProps) {
+  return (
+    <Input
+      onChange={(e) => onSearch(e.target.value)}
+      placeholder={placeholder}
+    />
+  );
 }

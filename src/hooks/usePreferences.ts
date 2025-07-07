@@ -1,13 +1,13 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { UserPreferences, Category } from '../domain';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { UserPreferences, Category } from "../domain";
 
 interface PreferencesState {
-    preferences: Partial<UserPreferences>;
-    updatePreferences: (prefs: Partial<UserPreferences>) => void;
-    toggleSource: (sourceId: string) => void;
-    toggleCategory: (category: Category) => void;
-    clearPreferences: () => void;
+  preferences: Partial<UserPreferences>;
+  updatePreferences: (prefs: Partial<UserPreferences>) => void;
+  toggleSource: (sourceId: string) => void;
+  toggleCategory: (category: Category) => void;
+  clearPreferences: () => void;
 }
 
 /**
@@ -15,60 +15,60 @@ interface PreferencesState {
  * Persisted to localStorage
  */
 export const usePreferences = create<PreferencesState>()(
-    persist(
-        (set) => ({
+  persist(
+    (set) => ({
+      preferences: {
+        preferredSources: [],
+        preferredCategories: [],
+        preferredAuthors: [],
+      },
+
+      updatePreferences: (prefs) =>
+        set((state) => ({
+          preferences: { ...state.preferences, ...prefs },
+        })),
+
+      toggleSource: (sourceId) =>
+        set((state) => {
+          const sources = state.preferences.preferredSources || [];
+          const newSources = sources.includes(sourceId)
+            ? sources.filter((id) => id !== sourceId)
+            : [...sources, sourceId];
+
+          return {
             preferences: {
-                preferredSources: [],
-                preferredCategories: [],
-                preferredAuthors: [],
+              ...state.preferences,
+              preferredSources: newSources,
             },
-
-            updatePreferences: (prefs) =>
-                set((state) => ({
-                    preferences: { ...state.preferences, ...prefs },
-                })),
-
-            toggleSource: (sourceId) =>
-                set((state) => {
-                    const sources = state.preferences.preferredSources || [];
-                    const newSources = sources.includes(sourceId)
-                        ? sources.filter(id => id !== sourceId)
-                        : [...sources, sourceId];
-
-                    return {
-                        preferences: {
-                            ...state.preferences,
-                            preferredSources: newSources,
-                        },
-                    };
-                }),
-
-            toggleCategory: (category) =>
-                set((state) => {
-                    const categories = state.preferences.preferredCategories || [];
-                    const newCategories = categories.includes(category)
-                        ? categories.filter(cat => cat !== category)
-                        : [...categories, category];
-
-                    return {
-                        preferences: {
-                            ...state.preferences,
-                            preferredCategories: newCategories,
-                        },
-                    };
-                }),
-
-            clearPreferences: () =>
-                set({
-                    preferences: {
-                        preferredSources: [],
-                        preferredCategories: [],
-                        preferredAuthors: [],
-                    },
-                }),
+          };
         }),
-        {
-            name: 'news-preferences',
-        }
-    )
+
+      toggleCategory: (category) =>
+        set((state) => {
+          const categories = state.preferences.preferredCategories || [];
+          const newCategories = categories.includes(category)
+            ? categories.filter((cat) => cat !== category)
+            : [...categories, category];
+
+          return {
+            preferences: {
+              ...state.preferences,
+              preferredCategories: newCategories,
+            },
+          };
+        }),
+
+      clearPreferences: () =>
+        set({
+          preferences: {
+            preferredSources: [],
+            preferredCategories: [],
+            preferredAuthors: [],
+          },
+        }),
+    }),
+    {
+      name: "news-preferences",
+    },
+  ),
 );
