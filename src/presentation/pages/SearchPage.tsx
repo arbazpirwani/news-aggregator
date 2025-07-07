@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchBar }         from '../components/molecules/SearchBar'
@@ -7,6 +6,8 @@ import { Button }            from '../components/atoms/Button'
 import { useSearchArticles } from '../../hooks'
 import DatePicker            from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import * as React from "react";
+import {debounce} from "../../utils";
 
 export default function SearchPage() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -29,11 +30,12 @@ export default function SearchPage() {
         from,
         to
     )
-
-    const handleSearch = (q: string) => {
+    const handleSearch = debounce((q: string) => {
         setSearchQuery(q)
         setPage(1)
-    }
+    }, 500)
+
+    const articles = data?.articles;
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -49,26 +51,29 @@ export default function SearchPage() {
 
             {/* Content */}
             <main className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-                <div className="bg-white rounded-md shadow p-6 space-y-4 w-full">
-                    {/* full‑width search bar */}
-                    <SearchBar
-                        onSearch={handleSearch}
-                        initialValue={searchQuery}
-                        placeholder="Enter keywords and press Go…"
-                        className="w-full"
-                    />
+                <div className="flex bg-white shadow p-6 w-full gap-2">
+                        {/* full‑width search bar */}
+                        <SearchBar
+                            onSearch={handleSearch}
+                            initialValue={searchQuery}
+                            placeholder="Search anything here.."
+                            className="w-full"
+                        />
 
-                    {/* single date‑range picker */}
-                    <DatePicker
-                        selectsRange
-                        startDate={startDate ?? undefined}
-                        endDate={endDate   ?? undefined}
-                        onChange={upd => { setDateRange(upd); setPage(1) }}
-                        isClearable
-                        onChangeRaw={handleRaw}
-                        placeholderText="Select date range"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
+                        {/* single date‑range picker */}
+                        <DatePicker
+                            selectsRange
+                            startDate={startDate ?? undefined}
+                            endDate={endDate ?? undefined}
+                            onChange={upd => {
+                                setDateRange(upd);
+                                setPage(1)
+                            }}
+                            isClearable
+                            onChangeRaw={handleRaw}
+                            placeholderText="Select date range"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
                 </div>
 
                 {/* Errors */}
@@ -76,26 +81,24 @@ export default function SearchPage() {
 
                 {/* Articles */}
                 <ArticleList
-                    articles={data?.articles ?? []}
+                    articles={articles ?? []}
                     isLoading={isLoading}
                     emptyMessage="No matching articles"
                 />
 
                 {/* Pagination */}
-                <div className="flex justify-between">
+                {articles?.length > 0 && (<div className="flex justify-between">
                     <Button
-                        disabled={page <= 1}
                         onClick={() => setPage(p => Math.max(1, p - 1))}
                     >
                         Previous
                     </Button>
                     <Button
-                        disabled={!data?.articles?.length}
                         onClick={() => setPage(p => p + 1)}
                     >
                         Next
                     </Button>
-                </div>
+                </div>)}
             </main>
         </div>
     )
