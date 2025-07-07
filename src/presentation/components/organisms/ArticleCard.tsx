@@ -1,69 +1,45 @@
-import type { Article } from '../../../domain/entities/Article';
+import * as React from 'react'
+import type { Article } from '../../../domain'
 
 interface ArticleCardProps {
-    article: Article;
-    onClick?: () => void;
+    article: Article
 }
 
-export function ArticleCard({ article, onClick }: ArticleCardProps) {
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-        });
-    };
-
-    const handleClick = () => {
-        if (onClick) {
-            onClick();
-        } else {
-            // Open article in new tab
-            window.open(article.url, '_blank', 'noopener,noreferrer');
-        }
-    };
-
+export function ArticleCard({ article }: ArticleCardProps) {
     return (
-        <article
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
-            onClick={handleClick}
-        >
-            {article.urlToImage && (
+        <div className="bg-white rounded-lg shadow p-4 flex flex-col md:flex-row gap-4">
+            {article.urlToImage ? (
                 <img
                     src={article.urlToImage}
                     alt={article.title}
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                        // Hide image if it fails to load
-                        (e.target as HTMLImageElement).style.display = 'none';
-                    }}
+                    className="w-full md:w-48 h-32 object-cover rounded-md"
                 />
+            ) : (
+                <div className="w-full md:w-48 h-32 bg-gray-200 rounded-md flex items-center justify-center">
+                    <span className="text-gray-500">No Image</span>
+                </div>
             )}
 
-            <div className="p-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                    <span className="font-medium">{article.source.name}</span>
-                    <span>•</span>
-                    <time>{formatDate(article.publishedAt)}</time>
+            <div className="flex-1 flex flex-col">
+                <div className="flex justify-between items-start">
+                    <h2 className="text-lg font-semibold text-gray-800">{article.title}</h2>
+                    <span className="text-xs text-gray-500">{article.source.name}</span>
                 </div>
-
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                    {article.title}
-                </h3>
-
-                {article.description && (
-                    <p className="text-gray-600 line-clamp-3">
-                        {article.description}
-                    </p>
-                )}
-
-                {article.author && (
-                    <p className="mt-3 text-sm text-gray-500">
-                        By {article.author}
-                    </p>
-                )}
+                <p className="text-sm text-gray-600 mt-2 flex-1">{article.description}</p>
+                <div className="mt-4 flex justify-between items-center">
+          <span className="text-xs text-gray-500">
+            {new Date(article.publishedAt).toLocaleString()}
+          </span>
+                    <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 font-medium hover:underline"
+                    >
+                        Read more →
+                    </a>
+                </div>
             </div>
-        </article>
-    );
+        </div>
+    )
 }
