@@ -11,7 +11,7 @@ export function Button({
                            children,
                            ...rest
                        }: ButtonProps) {
-    const base = 'font-semibold rounded-2xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2'
+    const base = 'font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2'
     const sizes = {
         sm: 'px-3 py-1 text-sm',
         md: 'px-4 py-2 text-base',
