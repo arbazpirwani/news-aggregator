@@ -1,25 +1,29 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Category, Country } from '../domain'
-import {useDependencies} from "./useDependencies";
+import { useDependencies } from './useDependencies'
+import type { ArticleCollection } from '../domain'
 
+/**
+ * Hook to search articles via the “everything” endpoint.
+ * Only accepts query + pagination + optional from/to dates.
+ */
 export function useSearchArticles(
-    searchQuery: string,
-    category?: Category,
-    country?: Country,
-    page = 1
+    query: string,
+    page: number = 1,
+    from?: string,
+    to?: string
 ) {
     const { searchArticlesUseCase } = useDependencies()
 
-    return useQuery({
-        queryKey: ['searchArticles', { searchQuery, category, country, page }],
+    return useQuery<ArticleCollection, Error>({
+        queryKey: ['searchArticles', { query, page, from, to }],
         queryFn: () =>
             searchArticlesUseCase.execute({
-                query: searchQuery,
-                category,
-                country,
+                query,
                 page,
+                from,
+                to,
             }),
-        enabled: !!searchQuery,
+        enabled: query.trim().length > 0,
         keepPreviousData: true,
     })
 }
