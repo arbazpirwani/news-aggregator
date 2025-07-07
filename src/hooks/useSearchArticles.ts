@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
-import { useDependencies } from './useDependencies'
-import type { ArticleCollection } from '../domain'
+import {useQuery} from '@tanstack/react-query'
+import {useDependencies} from './useDependencies'
+import type {ArticleCollection} from '../domain'
 
 /**
  * Hook to search articles via the “everything” endpoint.
@@ -12,10 +12,10 @@ export function useSearchArticles(
     from?: string,
     to?: string
 ) {
-    const { searchArticlesUseCase } = useDependencies()
+    const {searchArticlesUseCase} = useDependencies()
 
     return useQuery<ArticleCollection, Error>({
-        queryKey: ['searchArticles', { query, page, from, to }],
+        queryKey: ['searchArticles', {query, page, from, to}],
         queryFn: () =>
             searchArticlesUseCase.execute({
                 query,
@@ -24,6 +24,5 @@ export function useSearchArticles(
                 to,
             }),
         enabled: query.trim().length > 0,
-        keepPreviousData: true,
     })
 }
