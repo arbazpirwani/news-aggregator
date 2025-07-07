@@ -1,32 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { SearchBar } from "../components/molecules/SearchBar";
+import { SearchFilters } from "../components/organisms/SearchFilters";
 import { ArticleList } from "../components/organisms/ArticleList";
-import { Button } from "../components/atoms/Button";
+import { Pagination } from "../components/molecules/Pagination";
 import { useSearchArticles } from "../../hooks";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import * as React from "react";
 import { debounce } from "../../utils";
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-
-  // single date‑range state
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
     null,
   ]);
+
   const [startDate, endDate] = dateRange;
-
-  // disable manual typing in the picker
-  const handleRaw = (e: React.KeyboardEvent<HTMLInputElement>) =>
-    e.preventDefault();
-
-  // convert to YYYY-MM-DD
-  const from = startDate ? startDate.toISOString().split("T")[0] : undefined;
-  const to = endDate ? endDate.toISOString().split("T")[0] : undefined;
+  const from = startDate?.toISOString().split("T")[0];
+  const to = endDate?.toISOString().split("T")[0];
 
   const { data, isLoading, error } = useSearchArticles(
     searchQuery,
@@ -34,72 +23,41 @@ export default function SearchPage() {
     from,
     to,
   );
+  const articles = data?.articles ?? [];
+
+  // debounce so we don’t hammer the API on every keystroke
   const handleSearch = debounce((q: string) => {
     setSearchQuery(q);
     setPage(1);
   }, 500);
 
-  const articles = data?.articles;
+  const handleRaw = (e: React.KeyboardEvent<HTMLInputElement>) =>
+    e.preventDefault();
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">Search Articles</h1>
-          <Link to="/">
-            <Button variant="outline" size="sm">
-              Home
-            </Button>
-          </Link>
-        </div>
-      </header>
 
-      {/* Content */}
       <main className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-        <div className="flex bg-white shadow p-6 w-full gap-2">
-          {/* full‑width search bar */}
-          <SearchBar
-            onSearch={handleSearch}
-            initialValue={searchQuery}
-            placeholder="Search anything here.."
-            className="w-full"
-          />
-
-          {/* single date‑range picker */}
-          <DatePicker
-            selectsRange
-            startDate={startDate ?? undefined}
-            endDate={endDate ?? undefined}
-            onChange={(upd) => {
-              setDateRange(upd);
-              setPage(1);
-            }}
-            isClearable
-            onChangeRaw={handleRaw}
-            placeholderText="Select date range"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-          />
-        </div>
-
-        {/* Errors */}
-        {error && <div className="text-red-600">Error: {error.message}</div>}
-
-        {/* Articles */}
-        <ArticleList
-          articles={articles ?? []}
-          isLoading={isLoading}
-          emptyMessage="No matching articles"
+        <SearchFilters
+          searchQuery={searchQuery}
+          onSearch={handleSearch}
+          dateRange={dateRange}
+          onDateChange={setDateRange}
+          handleRaw={handleRaw}
         />
 
-        {/* Pagination */}
-        {articles?.length > 0 && (
-          <div className="flex justify-between">
-            <Button onClick={() => setPage((p) => Math.max(1, p - 1))}>
-              Previous
-            </Button>
-            <Button onClick={() => setPage((p) => p + 1)}>Next</Button>
-          </div>
+        {error && <div className="text-red-600">Error: {error.message}</div>}
+
+        <ArticleList articles={articles} isLoading={isLoading} />
+
+        {articles.length > 0 && (
+          <Pagination
+            page={page}
+            hasPrev={page > 1}
+            hasNext={articles.length > 0}
+            onPrev={() => setPage((p) => Math.max(1, p - 1))}
+            onNext={() => setPage((p) => p + 1)}
+          />
         )}
       </main>
     </div>
