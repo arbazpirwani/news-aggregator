@@ -1,69 +1,156 @@
-# React + TypeScript + Vite
+# News Aggregator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, scalable news aggregator web application built with **React**, **TypeScript**, and **Vite**. This project demonstrates:
 
-Currently, two official plugins are available:
+* **Clean Architecture** principles for frontend apps
+* **Atomic Design** methodology for UI components
+* Integration with multiple news providers (NewsAPI, The Guardian, New York Times)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> This repository serves as a template for building robust, maintainable, and production-ready React applications at scale.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Table of Contents
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* [Features](#features)
+* [Screenshots](#screenshots)
+* [Tech Stack](#tech-stack)
+* [Architecture](#architecture)
+* [Getting Started](#getting-started)
+* [Project Structure](#project-structure)
+* [Environment Variables](#environment-variables)
+* [Docker Support](#docker-support)
+* [License](#license)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Features
+
+* 🔎 **Multi-provider news search** (NewsAPI, Guardian, NYT)
+* 📂 **Category & Country filtering**
+* 💡 **Provider selection**
+* 🏷️ **Atomic UI components** (atoms, molecules, organisms)
+* 🧩 **Pagination**
+* ⚡ **Debounced search**
+* 💾 **TypeScript-first, typed API responses**
+* 🧱 **Clean code and modular architecture**
+* 🐳 **Production-ready Dockerfile**
+
+---
+
+## Screenshots
+
+![Home Page](screenshots/homepage.png)
+![Search Page](screenshots/searchpage.png)
+
+---
+
+## Tech Stack
+
+* **React** (Vite)
+* **TypeScript**
+* **React Query**
+* **Tailwind CSS**
+* **Axios**
+* **Docker**
+
+---
+
+## Architecture
+
+This project is structured using **Clean Architecture** principles, separating concerns across distinct layers:
+
+* **Presentation**: UI components (atomic design: atoms, molecules, organisms, pages)
+* **Domain**: Business logic, use cases, and entities
+* **Data**: API clients, data mappers, repositories
+
+This encourages scalable, testable code and easier onboarding for teams.
+
+* **Atomic Design** further organizes UI code into reusable building blocks for clarity and reuse.
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/news-aggregator.git
+cd news-aggregator
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. Set up environment variables
+
+* Copy `.env.example` to `.env` and add your API keys:
+
+```
+cp .env.example .env
+```
+
+* Edit `.env` and add your API keys for NewsAPI, Guardian, NYT.
+
+### 4. Run locally (development mode)
+
+```bash
+npm run dev
+```
+
+App will be running at [http://localhost:5173](http://localhost:5173) (or the port shown).
+
+---
+
+## Docker Support
+
+This project ships with a `Dockerfile` for production builds. You can run the app with only Docker installed:
+
+```bash
+docker build -t news-aggregator .
+docker run -p 8080:80 news-aggregator
+```
+
+* The production build is served using **nginx** at [http://localhost:8080](http://localhost:8080)
+* Make sure to provide your `.env` file before building the image.
+
+---
+
+## Project Structure
+
+```
+├── src/
+│   ├── data/            # Data layer: API clients, repositories
+│   ├── domain/          # Domain layer: use cases, entities, types
+│   ├── presentation/    # UI layer: components, pages (atomic design)
+│   ├── hooks/           # Custom React hooks
+│   ├── context/         # Context providers
+│   ├── utils/           # Utility functions
+│   └── ...
+├── public/
+├── Dockerfile
+├── .env.example
+├── README.md
+└── ...
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file based on `.env.example`:
+
+```
+VITE_NEWSAPI_KEY=your_newsapi_key_here
+VITE_GUARDIAN_KEY=your_guardian_key_here
+VITE_NYT_KEY=your_nytimes_key_here
+```
+
+---
+
+## License
+
+MIT
