@@ -75,7 +75,7 @@ This encourages scalable, testable code and easier onboarding for teams.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/news-aggregator.git
+git clone https://github.com/arbazpirwani/news-aggregator.git
 cd news-aggregator
 ```
 
