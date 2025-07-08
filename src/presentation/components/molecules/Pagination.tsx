@@ -1,7 +1,6 @@
 import { Button } from "../atoms/Button";
 
 interface PaginationProps {
-  page: number;
   hasPrev: boolean;
   hasNext: boolean;
   onPrev: () => void;
@@ -9,7 +8,6 @@ interface PaginationProps {
 }
 
 export function Pagination({
-  page,
   hasPrev,
   hasNext,
   onPrev,

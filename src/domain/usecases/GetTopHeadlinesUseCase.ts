@@ -9,7 +9,11 @@ import type {
  * All filtering parameters are declared in `HeadlinesParams`.
  */
 export class GetTopHeadlinesUseCase {
-  constructor(private newsRepository: NewsRepository) {}
+  private newsRepository: NewsRepository;
+
+  constructor(newsRepository: NewsRepository) {
+    this.newsRepository = newsRepository;
+  }
 
   async execute(params?: HeadlinesParams): Promise<ArticleCollection> {
     // Business validations (pageSize, page, etc.)

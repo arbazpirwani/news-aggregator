@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Spinner } from "../atoms/Spinner";
 import { ArticleCard } from "./ArticleCard";
 import type { Article } from "../../../domain";

@@ -1,17 +1,10 @@
 import { createContext } from "react";
-import { NewsRepositoryImpl } from "../data/repositories/NewsRepositoryImpl";
-import { GuardianRepositoryImpl } from "../data/repositories/GuardianRepositoryImpl";
-import { NytRepositoryImpl } from "../data/repositories/NytRepositoryImpl";
 import { CompositeNewsRepository } from "../data/repositories/CompositeNewsRepository";
 import { GetTopHeadlinesUseCase, SearchArticlesUseCase } from "../domain";
 import type { NewsRepository } from "../domain";
 
 /** 1) Compose a single aggregate repository */
-const newsRepository: NewsRepository = new CompositeNewsRepository([
-  new NewsRepositoryImpl(),
-  new GuardianRepositoryImpl(),
-  new NytRepositoryImpl(),
-]);
+const newsRepository: NewsRepository = new CompositeNewsRepository();
 
 /** 2) Instantiate your use-cases */
 const getTopHeadlinesUseCase = new GetTopHeadlinesUseCase(newsRepository);

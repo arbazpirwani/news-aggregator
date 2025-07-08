@@ -7,11 +7,10 @@ import { axiosConfig } from "../../config/axiosConfig";
  */
 export abstract class BaseApiClient {
   protected client: AxiosInstance;
+  protected apiKey: string;
 
-  protected constructor(
-    baseURL: string,
-    protected apiKey: string,
-  ) {
+  constructor(baseURL: string, apiKey: string) {
+    this.apiKey = apiKey;
     this.client = axios.create({ baseURL, ...axiosConfig });
 
     this.client.interceptors.request.use(
@@ -33,10 +32,11 @@ export abstract class BaseApiClient {
       (error) => {
         if (error.response) {
           console.error(
-            `API Error: ${error.response.status} - ${error.response.data?.message || error.message}`,
+            `API Error: ${error.response.status} - ${
+              error.response.data?.message || error.message
+            }`,
           );
 
-          // Handle common errors
           switch (error.response.status) {
             case 401:
               throw new Error("Invalid API key");
@@ -62,7 +62,10 @@ export abstract class BaseApiClient {
    * Make GET request with error handling
    */
   protected async get<T>(url: string, config?: any): Promise<T> {
-    const response = await this.client.get<T>(url, config);
+    const response = await this.client.get<T>(url, {
+      ...config,
+      params: { ...(config?.params || {}), "api-key": this.apiKey },
+    });
     return response.data;
   }
 }

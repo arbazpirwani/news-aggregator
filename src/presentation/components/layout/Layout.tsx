@@ -1,5 +1,4 @@
-import * as React from "react";
-import { Outlet, useLocation, Link } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { PageHeader } from "../molecules/PageHeader";
 
 const headerConfig: Record<

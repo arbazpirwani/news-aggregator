@@ -1,15 +1,20 @@
+import type { ArticleCollection } from "../../domain/entities/Article";
 import type {
-  ArticleCollection,
   NewsRepository,
   HeadlinesParams,
   SearchParams,
   PaginationParams,
   SourceParams,
   NewsSource,
-} from "../../domain";
+} from "../../domain/repositories/NewsRepository";
 import { NytApiClient } from "../api/NytApiClient";
 import { ArticleMapper } from "../mappers/ArticleMapper";
-import { env } from "../../config/env.ts";
+import { env } from "../../config/env";
+import type {
+  Category,
+  Country,
+  Language,
+} from "../../domain/entities/UserPreferences";
 
 export class NytRepositoryImpl implements NewsRepository {
   private client: NytApiClient;
@@ -20,38 +25,52 @@ export class NytRepositoryImpl implements NewsRepository {
     this.client = new NytApiClient(key);
   }
 
-  async getTopHeadlines(params?: HeadlinesParams): Promise<ArticleCollection> {
-    const res = await this.client.getTopStories();
-    const articles = res.results.map(ArticleMapper.fromNyt);
+  /** Top Stories endpoint (falls back to 'home') */
+  public async getTopHeadlines(
+    params?: HeadlinesParams,
+  ): Promise<ArticleCollection> {
+    const section = params?.category ?? "home";
+    const res: any = await this.client.getTopStories(section);
+    const results: any[] = res.results ?? [];
+    const totalResults = res.num_results ?? results.length;
+    const articles = results.map(ArticleMapper.fromNyt);
+
     return {
       articles,
-      totalResults: res.num_results,
-      page: 1,
-      pageSize: params?.pageSize || res.num_results,
+      totalResults,
+      page: params?.page ?? 1,
+      pageSize: params?.pageSize ?? totalResults,
     };
   }
 
-  async searchArticles(params: SearchParams): Promise<ArticleCollection> {
-    const res = await this.client.searchArticles({
+  /** Article Search endpoint */
+  public async searchArticles(
+    params: SearchParams,
+  ): Promise<ArticleCollection> {
+    // only q, page, pageSize are supported by NytApiClient.searchArticles
+    const res: any = await this.client.searchArticles({
       q: params.query,
       page: params.page,
       pageSize: params.pageSize,
     });
-    const docs = res.response.docs;
+
+    const docs: any[] = res.response?.docs ?? [];
+    const totalResults = res.response?.meta?.hits ?? docs.length;
     const articles = docs.map(ArticleMapper.fromNyt);
+
     return {
       articles,
-      totalResults: res.response.meta.hits,
-      page: params.page || 1,
-      pageSize: params.pageSize || articles.length,
+      totalResults,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? articles.length,
     };
   }
 
-  async getArticlesBySource(
+  /** Fallback for source filtering */
+  public async getArticlesBySource(
     sourceId: string,
     params?: PaginationParams,
   ): Promise<ArticleCollection> {
-    // No direct source filter in NYT; fallback to search on section_name
     return this.searchArticles({
       query: "",
       sources: [sourceId],
@@ -60,8 +79,8 @@ export class NytRepositoryImpl implements NewsRepository {
     });
   }
 
-  async getSources(params?: SourceParams): Promise<NewsSource[]> {
-    // NYT doesn’t provide a “sources” endpoint—manually return common sections or skip
+  /** Static list of “sections” as sources */
+  public async getSources(_params?: SourceParams): Promise<NewsSource[]> {
     const sections = [
       "home",
       "world",
@@ -75,9 +94,9 @@ export class NytRepositoryImpl implements NewsRepository {
       name: sec.charAt(0).toUpperCase() + sec.slice(1),
       description: "",
       url: "",
-      category: sec,
-      language: "en",
-      country: "us",
+      category: sec as Category,
+      language: "en" as Language,
+      country: "us" as Country,
     }));
   }
 }

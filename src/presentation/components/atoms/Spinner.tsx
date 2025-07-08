@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export function Spinner() {
   return (
     <div className="flex justify-center py-4">

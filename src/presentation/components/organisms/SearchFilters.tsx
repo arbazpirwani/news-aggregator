@@ -7,7 +7,9 @@ interface SearchFiltersProps {
   onSearch: (q: string) => void;
   dateRange: [Date | null, Date | null];
   onDateChange: (range: [Date | null, Date | null]) => void;
-  handleRaw: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleRaw: (
+    event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
+  ) => void;
 }
 
 export function SearchFilters({

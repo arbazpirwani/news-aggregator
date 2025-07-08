@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Category, Country } from "../../../domain";
 import { Button } from "../atoms/Button";
 import { FilterChip } from "../atoms/FilterChip.tsx";

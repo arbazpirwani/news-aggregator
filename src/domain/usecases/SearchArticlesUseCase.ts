@@ -9,7 +9,11 @@ import type {
  * Implements business logic for article search
  */
 export class SearchArticlesUseCase {
-  constructor(private newsRepository: NewsRepository) {}
+  private newsRepository: NewsRepository;
+
+  constructor(newsRepository: NewsRepository) {
+    this.newsRepository = newsRepository;
+  }
 
   async execute(params: SearchParams): Promise<ArticleCollection> {
     // Validate search query

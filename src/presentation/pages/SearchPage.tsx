@@ -31,12 +31,12 @@ export default function SearchPage() {
     setPage(1);
   }, 500);
 
-  const handleRaw = (e: React.KeyboardEvent<HTMLInputElement>) =>
-    e.preventDefault();
+  const handleRaw = (
+    e?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
+  ) => e?.preventDefault();
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       <main className="max-w-7xl mx-auto px-4 py-8 space-y-6">
         <SearchFilters
           searchQuery={searchQuery}
@@ -52,7 +52,6 @@ export default function SearchPage() {
 
         {articles.length > 0 && (
           <Pagination
-            page={page}
             hasPrev={page > 1}
             hasNext={articles.length > 0}
             onPrev={() => setPage((p) => Math.max(1, p - 1))}

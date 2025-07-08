@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { DependencyContext, defaultDependencies } from "./dependencies";
 
 export function DependencyProvider({ children }: { children: ReactNode }) {

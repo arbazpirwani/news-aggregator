@@ -1,4 +1,3 @@
-import * as React from "react";
 import type { Article } from "../../../domain";
 
 interface ArticleCardProps {

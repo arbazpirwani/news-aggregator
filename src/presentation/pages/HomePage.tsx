@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FilterSection } from "../components/organisms/FilterSection";
 import { ArticleList } from "../components/organisms/ArticleList";
 import { Pagination } from "../components/molecules/Pagination";
-import { useTopHeadlines } from "../../hooks";
-import type { Category, Country } from "../../domain";
+import { useTopHeadlines } from "../../hooks/useTopHeadlines";
+import type { Category, Country } from "../../domain/entities/UserPreferences";
 import type { Provider } from "../../domain/entities/Provider";
 
 export default function HomePage() {
@@ -53,7 +53,6 @@ export default function HomePage() {
         <ArticleList articles={data?.articles ?? []} isLoading={isLoading} />
 
         <Pagination
-          page={page}
           hasPrev={page > 1}
           hasNext={!!data?.articles?.length}
           onPrev={() => setPage((p) => p - 1)}
